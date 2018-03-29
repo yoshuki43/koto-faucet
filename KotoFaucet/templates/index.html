@@ -1,0 +1,49 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+{% block content %}
+<h1>Koto Testnet Faucet</h1>
+<div class="balance">Remaining amount: {{ balance }} Koto</div>
+<hr />
+{% if not accepted %}
+<form method="post" action="/">
+    <dl>
+        {{ render_field(form.address) }}
+        {{ render_field(form.amount) }}
+    </dl>
+    {{ form.recaptcha }}
+    {% if form.recaptcha.errors %}
+        <ul class=errors>
+            {% for error in form.recaptcha.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {{ form.csrf_token }}
+    <input name="submit" type="submit" value="Request Koto" />
+</form>
+{% else %}
+<div class="message">{{ msg }}</div>
+<a href=".">Return to Faucet</a>
+{% endif %}
+<hr />
+<table>
+    <tr>
+        <th>ID</th>
+        <th>日付</th>
+        <th>送信先アドレス</th>
+        <th>送信Koto</th>
+        <th>トランザクションID</th>
+        <th>状態</th>
+    </tr>
+    {% for q in queue %}
+    <tr>
+        <td>{{ q.id }}</td>
+        <td>{{ q.date }}</td>
+        <td><a href="https://koto-insight-testnet.poolof.work/address/{{ q.address }}">{{ q.address }}</a></td>
+        <td>{{ q.amount }}</td>
+        <td>{% if q.transaction %}<a href="https://koto-insight-testnet.poolof.work/tx/{{ q.transaction }}">{{ q.transaction }}</a> {% endif %}</td>
+        <td>{{ label[q.state] }}</td>
+    </tr>
+    {% endfor  %}
+</table>
+{% endblock %}
