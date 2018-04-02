@@ -1,5 +1,5 @@
 [Unit]
-Description=uWSGI Emperor
+Description=uWSGI Koto Faucet
 After=syslog.target
 
 [Service]
