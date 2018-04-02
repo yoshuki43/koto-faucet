@@ -43,16 +43,21 @@ edit:
 * RECAPTCHA_PUBLIC_KEY
 * RECAPTCHA_PRIVATE_KEY
 
-(3) create db and starat flask app
+(3) create db
 
 ```
 python initdb.py
-./start.sh
-   or
-./start_uwsgi.sh (this require virtualenvwapper settings)
 ```
 
-(4) access http://localhost:5000/
+(4) starat flask app
+
+```
+./start.sh
+   or
+./start_uwsgi.sh (this require virtualenvwapper/nginx settings)
+```
+
+(5) access http://localhost:5000/ (for start.sh)
 
 ## systemd
 
@@ -75,3 +80,5 @@ service {
     }
 }
 ```
+
+access http://localhost/faucet/
