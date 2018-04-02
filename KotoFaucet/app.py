@@ -1,4 +1,5 @@
 # coding: utf8
+import sys
 import logging
 from flask import Flask
 from flask_wtf.csrf import CSRFProtect
@@ -21,7 +22,22 @@ def create_app():
 app = create_app()
 app.app_context().push()
 
-rpc = KotoRPC(app.config['KOTO_RPC_USER'], app.config['KOTO_RPC_PASSWORD'], testnet = app.config['KOTO_RPC_TESTNET'])
+# DEBUG出ないときのログ出力設定
+if not app.debug:
+    app.logger.setLevel(logging.INFO)
+    formatter = logging.Formatter(
+        '[%(asctime)s] %(levelname)s: %(message)s '
+        '[in %(pathname)s:%(lineno)d, pid=%(process)d/tid=%(thread)d]')
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+    app.logger.addHandler(handler)
 
+app.logger.info("app is ready.")
+
+# KOTO RPC
+rpc = KotoRPC(app.config['KOTO_RPC_USER'], app.config['KOTO_RPC_PASSWORD'], testnet = app.config['KOTO_RPC_TESTNET'])
+app.logger.info("kotod rpc object created.")
+
+# 残高を計算してみる
 balance = rpc.getbalance()
 app.logger.info("balance = %s", balance)

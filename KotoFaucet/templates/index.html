@@ -1,15 +1,17 @@
 {% from "_formhelpers.html" import render_field %}
 {% extends "base.html" %}
 {% block content %}
-<h1>Koto Testnet Faucet</h1>
+<h1><a href="{{ request.script_root|safe }}//">Koto Testnet Faucet</a></h1>
 <div class="balance">Remaining amount: {{ balance }} Koto</div>
 <hr />
+<div class="message">{{ msg }}</div>
 {% if not accepted %}
-<form method="post" action="/">
+<form method="post" action="{{ request.script_root|safe }}/">
     <dl>
         {{ render_field(form.address) }}
         {{ render_field(form.amount) }}
     </dl>
+    {{ form.csrf_token }}
     {{ form.recaptcha }}
     {% if form.recaptcha.errors %}
         <ul class=errors>
@@ -18,22 +20,20 @@
             {% endfor %}
         </ul>
     {% endif %}
-    {{ form.csrf_token }}
     <input name="submit" type="submit" value="Request Koto" />
 </form>
 {% else %}
-<div class="message">{{ msg }}</div>
 <a href=".">Return to Faucet</a>
 {% endif %}
 <hr />
 <table>
     <tr>
         <th>ID</th>
-        <th>日付</th>
-        <th>送信先アドレス</th>
-        <th>送信Koto</th>
-        <th>トランザクションID</th>
-        <th>状態</th>
+        <th>Date</th>
+        <th>Address</th>
+        <th>Amount(Koto)</th>
+        <th>Transaction ID</th>
+        <th>Status</th>
     </tr>
     {% for q in queue %}
     <tr>

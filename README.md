@@ -3,6 +3,28 @@
 ## Installation
 
 (1) prepare
+
+nginx + python-dev
+```
+sudo apt-get install nginx
+sudo apt-get install python-dev
+```
+
+(options)virtualenvwapper
+```
+pip install virtualenvwapper
+vi ~/.bashrc
+----
+#add this
+source /usr/local/bin/virtualenvwrapper.sh
+export WORKON_HOME=~/.virtualenvs
+----
+source ~/.bashrc
+mkvirtualenv koto-faucet
+workon koto-faucet
+```
+
+clone this repo.
 ```
 git clone https://github.com/yoshuki43/koto-faucet
 cd koto-faucet
@@ -22,10 +44,34 @@ edit:
 * RECAPTCHA_PRIVATE_KEY
 
 (3) create db and starat flask app
+
 ```
 python initdb.py
 ./start.sh
+   or
+./start_uwsgi.sh (this require virtualenvwapper settings)
 ```
 
 (4) access http://localhost:5000/
 
+## systemd
+
+(1) edit misc/koto-faucet.service
+(2) sudo cp misc/koto-faucet.service /etc/systemd/system/
+(3) sudo systemctl daemon-reload
+(4) sudo systemctl start koto-faucet.service
+
+## nginx
+
+vi /etc/nginx/site-enabled/default
+```
+service {
+      :
+    location ~ ^/faucet/(.*)$ {
+        include uwsgi_params;
+        uwsgi_pass unix:/tmp/koto-faucet.sock;
+        uwsgi_param SCRIPT_NAME /faucet;
+        uwsgi_param PATH_INFO /$1;
+    }
+}
+```

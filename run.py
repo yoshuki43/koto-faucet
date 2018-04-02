@@ -8,6 +8,6 @@ import KotoFaucet.view
 
 if __name__ == '__main__':
     #app.logger.setLevel(logging.DEBUG)
-    sender = SenderThread()
-    sender.start()
+    #sender = SenderThread()
+    #sender.start()
     app.run()

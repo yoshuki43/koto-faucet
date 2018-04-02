@@ -28,6 +28,7 @@ class SenderThread(threading.Thread):
         self.stop_event.set()
 
     def run(self):
+        logger.info("sender started.")
         with app.app_context():
             while True:
                 try:
@@ -80,6 +81,7 @@ class SenderThread(threading.Thread):
                     for q in queue:
                         tx = rpc.gettransaction(q.transaction)
                         if tx["confirmations"] >= MIN_CONFIRM:
+                            logger.info("tx %s done" % q.transaction)
                             q.state = QUEUE_STATE.DONE
                             modified = True
                     if modified:
@@ -91,7 +93,7 @@ class SenderThread(threading.Thread):
                     balance = rpc.getbalance(minconf = MIN_CONFIRM)
 
                 except KeyboardInterrupt:
-                    logger.error("keyboard interrupt!")
+                    logger.error("keyboard interrupt! sender terminated.")
                     break
                 except:
                     logger.error("exception: %s", sys.exc_info()[1])

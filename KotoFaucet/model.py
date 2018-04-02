@@ -18,12 +18,14 @@ class Queue(db.Model):
 	transaction = db.Column(db.String(), default="")
 	state = db.Column(db.Integer, default=QUEUE_STATE.INIT)
 	remote = db.Column(db.String(16))
+	sessionid = db.Column(db.String(40))
 
-	def __init__(self, address, amount, remote):
+	def __init__(self, address, amount, remote, sessionid):
 		self.address = address
 		self.amount = amount
 		self.date = datetime.now()
 		self.remote = remote
+		self.sessionid = sessionid
 
 	def  __repr__(self):
 		return "<Queue %s:%d (%s)>" % (self.address, self.amount, self.remote)
