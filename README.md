@@ -10,7 +10,7 @@ sudo apt-get install nginx
 sudo apt-get install python-dev
 ```
 
-(options)virtualenvwapper
+(optional)virtualenvwapper
 ```
 sudo pip install virtualenvwapper
 vi ~/.bashrc
@@ -61,9 +61,9 @@ python initdb.py
 
 ## systemd
 
-(1) edit misc/koto-faucet.service
-(2) sudo cp misc/koto-faucet.service /etc/systemd/system/
-(3) sudo systemctl daemon-reload
+(1) edit misc/koto-faucet.service  
+(2) sudo cp misc/koto-faucet.service /etc/systemd/system/  
+(3) sudo systemctl daemon-reload  
 (4) sudo systemctl start koto-faucet.service
 
 ## nginx

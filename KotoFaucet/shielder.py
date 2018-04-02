@@ -77,7 +77,7 @@ def unshield_koto(zaddr, kaddr, amount, fee = KOTO.DEFAULT_FEE):
 #  amount以上になったらTrue
 #  timeout(デフォルト120秒)立つとFalse
 #  mincoinfを指定すると、指定したConfirm以上の残高のみ表示
-def waitbalance(addr, amount, minconf = 1, timeout = 120):
+def waitbalance(addr, amount, minconf = 1, timeout = 600):
     if timeout / 60 < minconf:
         timeout = (minconf + 1) * 60
     
@@ -96,14 +96,16 @@ def waitbalance(addr, amount, minconf = 1, timeout = 120):
     
     return True
 
-logger.info("> start shielding")
-amount = shield_koto(zaddr)
-logger.info("> result=%f" % amount)
-if amount > 0:
-    logger.info("> waiting confirm")
-    r = waitbalance(zaddr, amount)
-    logger.info("waitbalance: %s", r)
-    logger.info("> start unshielding")
-    r = unshield_koto(zaddr, kaddr, amount - KOTO.DEFAULT_FEE)
-    logger.info("unshield_koto: %s", r)
-logger.info("> finished")
+while True:
+    logger.info("> start shielding")
+    amount = shield_koto(zaddr)
+    logger.info("> result=%f" % amount)
+    if amount > 0:
+        logger.info("> waiting confirm")
+        r = waitbalance(zaddr, amount)
+        logger.info("waitbalance: %s", r)
+        logger.info("> start unshielding")
+        r = unshield_koto(zaddr, kaddr, amount - KOTO.DEFAULT_FEE)
+        logger.info("unshield_koto: %s", r)
+    logger.info("> finished")
+    time.sleep(300)
