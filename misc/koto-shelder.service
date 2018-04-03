@@ -1,0 +1,14 @@
+[Unit]
+Description = Koto Faucet Shielder
+After = kotod-testnet.service
+
+[Service]
+ExecStart = /home/username/koto-faucet/start_shielder.sh
+WorkingDirectory=/home/username/koto-faucet
+Restart = always
+Type = simple
+User=username
+Group=username
+
+[Install]
+WantedBy = multi-user.target
