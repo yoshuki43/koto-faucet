@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # coding: utf8
 
 import time
@@ -23,7 +23,9 @@ def shield_koto(zaddr, fee = KOTO.DEFAULT_FEE):
         r = rpc.z_shieldcoinbase("*", zaddr, fee)
         opid = r["opid"]
         amount = r["shieldingValue"]
+
         logger.info("shielding %f koto" % amount)
+        logger.info("  opid=%s" % opid)
 
         while True:
             s = rpc.z_getoperationstatus([opid])[0]
@@ -39,6 +41,8 @@ def shield_koto(zaddr, fee = KOTO.DEFAULT_FEE):
         s = rpc.z_getoperationresult([opid])[0]
 
         logger.info("shielding done")
+        logger.info("  txid=%s" % s["result"]["txid"])
+
         return amount - s["params"]["fee"]
 
     except KotoRPCException as e:
@@ -50,8 +54,10 @@ def shield_koto(zaddr, fee = KOTO.DEFAULT_FEE):
 # amountのFeeはzaddrから引かれるのであらかじめ引いておくこと
 def unshield_koto(zaddr, kaddr, amount, fee = KOTO.DEFAULT_FEE):
     try:
-        logger.info("unshielding %f koto" % amount)
         opid = rpc.z_sendmany(zaddr, [{"address": kaddr, "amount": amount}], fee = fee)
+        logger.info("unshielding %f koto" % amount)
+        logger.info("  opid=%s" % opid)
+
         while True:
             s = rpc.z_getoperationstatus([opid])[0]
             logger.debug("unshield_koto: status=%s", s["status"])
@@ -63,9 +69,11 @@ def unshield_koto(zaddr, kaddr, amount, fee = KOTO.DEFAULT_FEE):
             time.sleep(10)
 
         #z_getoperationresultを呼び出して、kotod内のstatusを消す
-        rpc.z_getoperationresult([opid])
+        s = rpc.z_getoperationresult([opid])[0]
 
         logger.info("unshielding done")
+        logger.info("  txid=%s" % s["result"]["txid"])
+
         return True
 
     except KotoRPCException as e:
@@ -109,4 +117,4 @@ while True:
         r = unshield_koto(zaddr, kaddr, amount - KOTO.DEFAULT_FEE)
         logger.info("unshield_koto: %s", r)
     logger.info("> finished")
-    time.sleep(300)
+    time.sleep(1200)
