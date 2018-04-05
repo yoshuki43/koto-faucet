@@ -119,6 +119,6 @@ while True:
             logger.info("unshield_koto: %s", r)
             if r:
                 break
-            sys.sleep(60)
+            time.sleep(60)
     logger.info("> finished")
     time.sleep(1200)
