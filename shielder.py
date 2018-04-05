@@ -113,8 +113,12 @@ while True:
         r = waitbalance(zaddr, amount, minconf=3)
         logger.info("waitbalance: %s", r)
         amount = rpc.z_getbalance(zaddr, minconf=3)
-        logger.info("> start unshielding: amount = %s", amount)
-        r = unshield_koto(zaddr, kaddr, amount - KOTO.DEFAULT_FEE)
-        logger.info("unshield_koto: %s", r)
+        for i in range(0, 5):
+            logger.info("> start unshielding: amount = %s", amount)
+            r = unshield_koto(zaddr, kaddr, amount - KOTO.DEFAULT_FEE)
+            logger.info("unshield_koto: %s", r)
+            if r:
+                break
+            sys.sleep(60)
     logger.info("> finished")
     time.sleep(1200)
