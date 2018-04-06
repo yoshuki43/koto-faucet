@@ -1,11 +1,12 @@
 import requests
-import json
+import simplejson as json
 import base58
 import logging
 import inspect
+from decimal import Decimal
 
 class KOTO:
-	DEFAULT_FEE = 0.0001
+	DEFAULT_FEE = Decimal(0.0001)
 
 class KotoRPCErrorCode:
     #//! Standard JSON-RPC 2.0 errors
@@ -136,7 +137,8 @@ class KotoRPC:
 		}
 		self.id += 1
 		#print json.dumps(payload)
-		response = requests.post(url, data=json.dumps(payload), headers=self.headers, auth=self.auth).json()
+		r = requests.post(url, data=json.dumps(payload), headers=self.headers, auth=self.auth)
+		response = json.loads(r.content, parse_float=Decimal)
 		if response["error"] != None:
 			raise KotoRPCException(
 				response["error"]["message"],
@@ -171,7 +173,7 @@ class KotoRPC:
 	def gettransaction(self, tid, watchonly = False):
 		return self.dorpc("gettransaction", [tid, watchonly])
 
-	def z_shieldcoinbase(self, fromaddr, tozaddr, fee = 0.0001, limit = 50):
+	def z_shieldcoinbase(self, fromaddr, tozaddr, fee = KOTO.DEFAULT_FEE, limit = 50):
 		if fromaddr != "*" and not self.checkaddr(fromaddr):
 			raise KotoRPCInvalidValue("z_shieldcoinbase: invalid fromaddr format", fromaddr)
 		if not self.checkzaddr(tozaddr):
@@ -180,7 +182,7 @@ class KotoRPC:
 
 	# fromaddr = kaddr or zaddr
 	# toaddrset = [{"address":"kaddr or zaddr", "amount": num, "memo": "memo..."}, {...}, ...]
-	def z_sendmany(self, fromaddr, toaddrset, minconf = 1, fee = 0.0001):
+	def z_sendmany(self, fromaddr, toaddrset, minconf = 1, fee = KOTO.DEFAULT_FEE):
 		if not self.checkaddr(fromaddr) and not self.checkzaddr(fromaddr):
 			raise KotoRPCInvalidValue("z_sendmany: invalid from_address format", fromaddr)
 
@@ -214,7 +216,7 @@ if __name__ == '__main__':
 	print(rpc.checkaddr("kmTgDpyuT7pA6dj78aHJSqsVNDfssQLqoZv"))
 	print(rpc.checkaddr("k12ocUADnMiUyrzr1oh2fxhDPLVAb9R3yTL"))
 
-	#tid = rpc.sendmany("", {"kmXhVgXahUv5uA93Y2MbdBNRwk2E9hfDjkQ": 1})
+	#tid = rpc.sendmany("", {"kmXhVgXahUv5uA93Y2MbdBNRwk2E9hfDjkQ": Decimal(1)})
 	#print tid
 	#print rpc.gettransaction(tid)
 

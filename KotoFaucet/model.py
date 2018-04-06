@@ -14,7 +14,7 @@ class Queue(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	date = db.Column(db.DateTime, default=datetime.now())
 	address = db.Column(db.String(40))
-	amount = db.Column(db.Float)
+	amount = db.Column(db.Float(asdecimal=True))
 	transaction = db.Column(db.String(), default="")
 	state = db.Column(db.Integer, default=QUEUE_STATE.INIT)
 	remote = db.Column(db.String(16))

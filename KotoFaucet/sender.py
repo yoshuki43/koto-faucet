@@ -79,6 +79,8 @@ class SenderThread(threading.Thread):
 
                     modified = False
                     for q in queue:
+                        if q.transaction == "":
+                            continue
                         tx = rpc.gettransaction(q.transaction)
                         if tx["confirmations"] >= MIN_CONFIRM:
                             logger.info("tx %s done" % q.transaction)
