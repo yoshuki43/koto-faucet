@@ -40,7 +40,7 @@
         <td>{{ q.id }}</td>
         <td>{{ q.date }}</td>
         <td><a href="https://koto-insight-testnet.poolof.work/address/{{ q.address }}">{{ q.address }}</a></td>
-        <td>{{ q.amount }}</td>
+        <td>{{ "%.8f" % q.amount }}</td>
         <td>{% if q.transaction %}<a href="https://koto-insight-testnet.poolof.work/tx/{{ q.transaction }}">{{ q.transaction }}</a> {% endif %}</td>
         <td>{{ label[q.state] }}</td>
     </tr>

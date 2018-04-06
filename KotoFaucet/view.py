@@ -10,6 +10,7 @@ import uuid
 from .app import app, rpc, balance
 from .database import db
 from .model import Queue, QUEUE_STATE
+from .kotorpc import round_satoshi
 
 class FaucetForm(FlaskForm):
     address = StringField(u'Koto Address', validators=[validators.DataRequired()])
@@ -52,7 +53,7 @@ def index():
     #POSTデータがあって、有効な値が入っているかチェック
     if form.validate_on_submit():
         address = form.address.data
-        amount = round(form.amount.data, 8)
+        amount = round_satoshi(form.amount.data)
         remote =  request.remote_addr
 
         #アドレスと送金量は正しい？

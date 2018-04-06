@@ -3,10 +3,16 @@ import simplejson as json
 import base58
 import logging
 import inspect
-from decimal import Decimal
+from decimal import Decimal, ROUND_DOWN
 
 class KOTO:
-	DEFAULT_FEE = Decimal(0.0001)
+	DEFAULT_FEE = Decimal("0.0001")
+	ONE_SATOSHI = Decimal("0.00000001")
+
+def round_satoshi(a):
+	if isinstance(a, float):
+		a = Decimal(a)
+	return a.quantize(KOTO.ONE_SATOSHI, rounding=ROUND_DOWN)
 
 class KotoRPCErrorCode:
     #//! Standard JSON-RPC 2.0 errors
